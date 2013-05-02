@@ -1,23 +1,97 @@
+//main.rs
+//main is a file to do operations on matrices.
+//By: David Hauck
+//Date: 5/1/13
+
 mod Matrix;
 
+//holds the core of the program, asks user for input and acts upon it
 fn main()
 {
 	loop
 	{
-		print("Pick an option (*all matrix values must be integers):\r\n1) Add two matrices\r\n2) Multiply a Matrix by a constant\r\n3) Multiply two matrices together\r\n4) Subtract two matricesi\r\n5)Test equal\r\n>");
+		print("Pick an option (*all matrix values must be integers):\r\n1) Add two matrices\r\n2) Subtract two matrices\r\n3) Multiply two matrices together\r\n4) Multiply a Matrix by a constant\r\n5) Test equal\r\n6) Display matrix from file\r\n>");
 		let input = io::stdin().read_line();
 		match input
 		{
 			~"1" => addMatrices(),
-			~"2" => multConst(),
+			~"2" => subMatrices(),
 			~"3" => multMatrices(),
-			~"4" => subMatrices(),
+			~"4" => multConst(),
 			~"5" => testEqual(),
+			~"6" => readMatrix(),
 			_ => break
 		};
 	}
 }
 
+//Reads in a matrix from a file
+fn readMatrix()
+{
+	let fileText : ~[~str];
+	let rResult : Result<@Reader, ~str>;
+	rResult = io::file_reader(~path::Path("largemat.txt"));
+	if rResult.is_ok()
+	{
+		let file = rResult.unwrap();
+		fileText = file.read_lines();
+	}
+	else
+	{
+		return;
+	}
+	let mut i = 0;
+	let mut j = 0;
+	let heightOption = uint::from_str(fileText[0]);
+	let height =
+	match heightOption
+	{
+		None => 
+		{
+			println("Invalid Matrix");
+			return;
+		},
+		Some(x) => x
+	};
+	let widthOption = uint::from_str(fileText[0]);
+	let width =
+	match widthOption
+	{
+		None => 
+		{
+			println("Invalid Matrix");
+			return;
+		},
+		Some(x) => x
+	};
+	let mut rec = ~[ ~[ 0, ..0], ..0];
+	for height.times
+	{
+		j = 0;
+		rec.push(~[0, ..0]);
+		for width.times
+		{
+			let inputOption = int::from_str(fileText[2 + i * height + j]);
+			rec[i].push(
+				match inputOption
+				{
+					None => 
+					{
+						println("Invalid Matrix");
+						return;
+					},
+					Some(x) => x
+				}
+			);
+			j += 1;
+		}
+		i += 1;
+	}
+	let newMatrix = Matrix::Matrix{height : height, width : width, values : rec};
+	newMatrix.display();
+}
+
+//Tests if two user inputted matrices are equal to each other
 fn testEqual()
 {
 	let matrixOption1 = getMatrix();
@@ -49,6 +123,7 @@ fn testEqual()
 	}
 }
 
+//subtracts one matrix from anther
 fn subMatrices()
 {
 	let matrixOption1 = getMatrix();
@@ -86,6 +161,7 @@ fn subMatrices()
 
 }
 
+//multiplies two matrices together
 fn multMatrices()
 {
 	let matrixOption1 = getMatrix();
@@ -122,6 +198,7 @@ fn multMatrices()
 
 }
 
+//multiplies a matrix by a constant
 fn multConst()
 {
 	let matrixOption1 = getMatrix();
@@ -146,13 +223,13 @@ fn multConst()
 			println("Invalid input");
 			return;
 		},
-		Some(int)=> valueOption.get()
+		Some(x)=> x
 	};
 	println("The resulting matrix is: ");
 	matrix1.mulConst(value).display();
 }
 
-
+//adds two matrices together
 fn addMatrices()
 {
 	let matrixOption1 = getMatrix();
@@ -189,6 +266,7 @@ fn addMatrices()
 	}
 }
 
+//gets a matrix from user input
 fn getMatrix() -> Option<Matrix::Matrix>
 {
 	println("Enter height of you matrix: ");
@@ -198,7 +276,7 @@ fn getMatrix() -> Option<Matrix::Matrix>
 	match heightOption
 	{
 		None => 0,
-		Some(uint)=> heightOption.get()
+		Some(x)=> x
 	};
 	println("Enter width of your matrix: ");
 	let widthInput = io::stdin().read_line();
@@ -207,7 +285,7 @@ fn getMatrix() -> Option<Matrix::Matrix>
 	match widthOption
 	{
 		None => 0,
-		Some(uint) => widthOption.get()
+		Some(x) => x
 	};
 	if height == 0 || width == 0
 	{
@@ -231,7 +309,7 @@ fn getMatrix() -> Option<Matrix::Matrix>
 			match valueOption
 			{
 				None => 0,
-				Some(int) => valueOption.get()
+				Some(x) => x
 			});
 			j += 1;
 		}

@@ -1,3 +1,7 @@
+//file to hold a matrix object
+//By: David Hauck
+//Date: 5/1/13
+
 struct Matrix
 {
 	values : ~[~[int]],
@@ -7,21 +11,19 @@ struct Matrix
 
 impl Matrix
 {
+	//creates a new Matrix
 	pub fn new(height : uint, width : uint, values : ~[~[int]]) -> Matrix
 	{
 		Matrix{height : height, width : width, values : values}
 	}
 
-	pub fn getHeight(&self) -> uint
-	{
-		return self.height;
-	}
-
+	//gets the object at a position in the Matrix
 	pub fn get(&self, i: int, j : int) -> int
 	{
 		return self.values[i][j];
 	}
 
+	//displays the matrix on the screen
 	pub fn display(&self)
 	{
 		let mut i = 0;
@@ -39,15 +41,19 @@ impl Matrix
 		}
 	}
 
+	//determines whether two matrices can be added together
 	pub fn canAdd (&self, other : &Matrix) -> bool
 	{
 		(self.height == other.height && self.width == other.width)
 	}
 
+	//determines whether two matrices can be multiplied together
 	pub fn canMult (&self, other : &Matrix) -> bool
 	{
 		(self.width == other.height)
 	}
+
+	//multiplies a matrix by a constant
 	pub fn mulConst(&self, value : int) -> Matrix
 	{
 		let mut newValues = ~[ ~[ 0, ..0], ..0];
@@ -69,6 +75,7 @@ impl Matrix
 
 }
 
+// overrides the + operator for two matrices
 impl Add<Matrix, Matrix> for Matrix
 {
 
@@ -93,6 +100,7 @@ impl Add<Matrix, Matrix> for Matrix
 	}
 }
 
+//overrides the - operator for two matrices
 impl Sub<Matrix, Matrix> for Matrix
 {
 
@@ -117,6 +125,7 @@ impl Sub<Matrix, Matrix> for Matrix
 	}
 }
 
+//overrides the * operator for two matrices
 impl Mul<Matrix, Matrix> for Matrix
 {
 	pub fn mul(&self, other : &Matrix) -> Matrix
@@ -148,6 +157,7 @@ impl Mul<Matrix, Matrix> for Matrix
 	}
 }
 
+//overrides the == and != operators for two matrices
 impl Eq for Matrix
 {
 	pub fn eq(&self, other : &Matrix) -> bool
