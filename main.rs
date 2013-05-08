@@ -12,7 +12,7 @@ fn main()
 	{
 		print("Pick an option (*all matrix values must be integers):\r\n1) Add two matrices\r\n2) Subtract two matrices\r\n3) Multiply two matrices together\r\n4) Multiply a Matrix by a constant\r\n5) Test equal\r\n6) Display matrix from file\r\n>");
 		let input = io::stdin().read_line();
-		match input
+		match input //Calls a differnet method depending on what the user wants to do
 		{
 			~"1" => addMatrices(),
 			~"2" => subMatrices(),
@@ -28,7 +28,7 @@ fn main()
 //Reads in a matrix from a file
 fn readMatrix()
 {
-	let fileText : ~[~str];
+	let fileText : ~[~str]; //pointer to an array of strings
 	let rResult : Result<@Reader, ~str>;
 	rResult = io::file_reader(~path::Path("largemat.txt"));
 	if rResult.is_ok()
@@ -42,7 +42,7 @@ fn readMatrix()
 	}
 	let mut i = 0;
 	let mut j = 0;
-	let heightOption = uint::from_str(fileText[0]);
+	let heightOption = uint::from_str(fileText[0]); //convert the first line to a uint for the height
 	let height =
 	match heightOption
 	{
@@ -53,7 +53,7 @@ fn readMatrix()
 		},
 		Some(x) => x
 	};
-	let widthOption = uint::from_str(fileText[0]);
+	let widthOption = uint::from_str(fileText[1]); //convert the second line to a uint for the width
 	let width =
 	match widthOption
 	{
@@ -64,14 +64,15 @@ fn readMatrix()
 		},
 		Some(x) => x
 	};
-	let mut rec = ~[ ~[ 0, ..0], ..0];
+	let mut rec = ~[ ~[ 0, ..0], ..0]; //pointer to an array of pointers of length 0  each to an array of integers (0) of length 0 
 	for height.times
 	{
 		j = 0;
-		rec.push(~[0, ..0]);
+		rec.push(~[0, ..0]); //push a new pointer to an array of integers onto the array
 		for width.times
 		{
 			let inputOption = int::from_str(fileText[2 + i * height + j]);
+			//push the new number
 			rec[i].push(
 				match inputOption
 				{
@@ -94,6 +95,7 @@ fn readMatrix()
 //Tests if two user inputted matrices are equal to each other
 fn testEqual()
 {
+	//get two matrices
 	let matrixOption1 = getMatrix();
 	let matrix1 =
 	match matrixOption1
@@ -116,6 +118,8 @@ fn testEqual()
 		},
 		Some(Matrix::Matrix {_}) => matrixOption2.get()
 	};
+
+	//test if they are equal
 	match (matrix1 == matrix2)
 	{
 		true => println("They are equal!"),
@@ -126,6 +130,7 @@ fn testEqual()
 //subtracts one matrix from anther
 fn subMatrices()
 {
+	//get two matrices
 	let matrixOption1 = getMatrix();
 	let matrix1 =
 	match matrixOption1
@@ -148,6 +153,8 @@ fn subMatrices()
 		},
 		Some(Matrix::Matrix {_}) => matrixOption2.get()
 	};
+
+	//if you can add them, you can subtract them
 	if matrix1.canAdd(&matrix2)
 	{
 		let resultMatrix = matrix1 - matrix2;
@@ -164,6 +171,7 @@ fn subMatrices()
 //multiplies two matrices together
 fn multMatrices()
 {
+	//get two matrices
 	let matrixOption1 = getMatrix();
 	let matrix1 =
 	match matrixOption1
@@ -186,6 +194,7 @@ fn multMatrices()
 		},
 		Some(Matrix::Matrix {_}) => matrixOption2.get()
 	};
+	//multiply them if you can
 	if matrix1.canMult(&matrix2)
 	{
 		println("The resulting matrix is: ");
@@ -201,6 +210,7 @@ fn multMatrices()
 //multiplies a matrix by a constant
 fn multConst()
 {
+	//get a matrix and a constant
 	let matrixOption1 = getMatrix();
 	let matrix1 =
 	match matrixOption1
@@ -232,6 +242,7 @@ fn multConst()
 //adds two matrices together
 fn addMatrices()
 {
+	//get two matrices
 	let matrixOption1 = getMatrix();
 	let matrix1 =
 	match matrixOption1
@@ -254,6 +265,7 @@ fn addMatrices()
 		},
 		Some(Matrix::Matrix {_}) => matrixOption2.get()
 	};
+	//add them together
 	if matrix1.canAdd(&matrix2)
 	{
 		let resultMatrix = matrix1 + matrix2;
@@ -269,6 +281,7 @@ fn addMatrices()
 //gets a matrix from user input
 fn getMatrix() -> Option<Matrix::Matrix>
 {
+	//get the height and the width of the matrixc
 	println("Enter height of you matrix: ");
 	let input = io::stdin().read_line();
 	let heightOption = uint::from_str(input);
@@ -291,6 +304,7 @@ fn getMatrix() -> Option<Matrix::Matrix>
 	{
 		return None;
 	};
+	//set counters
 	let mut i = 0;
 	let mut j = 0;
 	let mut rec = ~[ ~[ 0, ..0], ..0];
@@ -301,6 +315,7 @@ fn getMatrix() -> Option<Matrix::Matrix>
 		rec.push(~[ 0, ..0]);
 		for width.times
 		{
+			//get each number at each position
 			println(fmt!("Enter value at position (%?, %?)", i, j));
 			let value = io::stdin().read_line();
 			let valueOption = int::from_str(value);

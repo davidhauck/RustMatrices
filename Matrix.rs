@@ -175,7 +175,7 @@ impl Eq for Matrix
 			{
 				if (self.values[i][j] != other.values[i][j])
 				{
-					return false;
+					return false;//immediatly exit if you know it isnt equal
 				}
 				j += 1;
 			}
